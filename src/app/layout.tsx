@@ -1,18 +1,20 @@
-import './globals.css'
+import Head from "next/head";
+import "./global.css";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
-      <body>{children}</body>
-    </html>
-  )
+    <>
+      <Head>
+        <title>みんなで作る讃美歌権利表</title>
+        <meta name="description" content="" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      {children}
+    </>
+  );
 }
