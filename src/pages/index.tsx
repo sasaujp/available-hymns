@@ -1,11 +1,21 @@
-import { SONGS } from "@/utils/songs";
-import { Typography, Input, Card, Col, Row, Button } from "antd";
+import { Typography, Input, Space, Checkbox } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { CheckboxValueType } from "antd/es/checkbox/Group";
+import { SongTable, Status } from "components/table";
+import { DataType, fetchData } from "@/utils/fetchData";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Search } = Input;
+
+const options = [
+  { label: "情報提供待ち", value: "waiting" },
+  { label: "パブリック・ドメイン", value: "publicDomain" },
+  { label: "UCCJ", value: "uccj" },
+  { label: "JASRAC", value: "jasrac" },
+  { label: "その他", value: "other" },
+];
 
 const NoSSR = dynamic(() => import("../app/layout"), {
   ssr: false,
@@ -15,25 +25,9 @@ const NoSSR = dynamic(() => import("../app/layout"), {
 });
 
 export default function Home() {
+  const [data, setData] = useState<{ [key: string]: DataType }>({});
   const [searchText, setSearchText] = useState("");
-  const songs = useMemo(() => {
-    if (!searchText.length) {
-      return SONGS;
-    }
-
-    const texts = searchText.split(" ");
-    return SONGS.filter(([number, start]) => {
-      for (const t of texts) {
-        if (number.includes(t)) {
-          return true;
-        }
-        if (start.includes(t)) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }, [searchText]);
+  const [filter, setFilter] = useState<CheckboxValueType[]>([]);
 
   const onChangeSearchText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,32 +36,49 @@ export default function Home() {
     []
   );
 
+  useEffect(() => {
+    const fetch = async () => {
+      const _data = await fetchData();
+      console.log(_data);
+      setData(
+        _data.reduce<{ [key: string]: DataType }>((prev, cur) => {
+          prev[cur.key] = cur;
+          return prev;
+        }, {})
+      );
+    };
+    fetch();
+  }, []);
+
+  const onFilter = useCallback((value: CheckboxValueType[]) => {
+    setFilter(value);
+  }, []);
+  console.log(filter);
   return (
     <NoSSR>
-      <Title className={styles.title}>みんなで作る讃美歌権利表</Title>
-      <Search
-        size="large"
-        allowClear
-        style={{ maxWidth: 300 }}
-        onChange={onChangeSearchText}
-        placeholder="番号・歌い出しで絞り込む"
-      />
-      <Row className={styles.songs} gutter={[16, 24]}>
-        {songs.map(([number, start]) => {
-          return (
-            <Col className={styles.card} span={6} key={number}>
-              <Card title={`${number} ${start}`}>
-                <>
-                  <Button type="primary">Public Domain</Button>
-                  <Button type="primary">教団</Button>
-                  <Button>JASRAC</Button>
-                  <Button danger>その他</Button>
-                </>
-              </Card>
-            </Col>
-          );
-        })}
-      </Row>
+      <div className={styles.container}>
+        <Title className={styles.title}>みんなで作る讃美歌権利表</Title>
+        <Space>
+          <Search
+            size="large"
+            allowClear
+            style={{ maxWidth: 300 }}
+            onChange={onChangeSearchText}
+            placeholder="番号・歌い出しで絞り込む"
+          />
+          <Text>絞り込み: </Text>
+          <Checkbox.Group
+            options={options}
+            onChange={onFilter}
+            value={filter}
+          />
+        </Space>
+        <SongTable
+          searchText={searchText}
+          data={data}
+          filter={filter as Status[]}
+        />
+      </div>
     </NoSSR>
   );
 }

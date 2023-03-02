@@ -1,9 +1,9 @@
 .title {
   margin-top: 0;
 }
-
-.songs {
-  margin-top: 16px;
+.container {
+  width: 95%;
+  margin: 0 auto;
 }
 
 .card {
