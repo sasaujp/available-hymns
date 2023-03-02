@@ -1,7 +1,7 @@
 import type { NextResponse } from "next/server";
 
 export const config = {
-  runtime: "experimental-edge",
+  runtime: "edge",
 };
 
 export default function handler(es: NextResponse) {
