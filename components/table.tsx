@@ -67,37 +67,59 @@ const Right: React.FC<{
     <>
       {right.waiting && <Text>情報提供待ち </Text>}
       {right.publicDomain && (
-        <Popover content={<PublicDomain />} title="配信での利用について">
-          <>
+        <Popover
+          content={<PublicDomain />}
+          trigger="click"
+          title="配信での利用について"
+        >
+          <Button type="text">
             <Text strong type="success">
               パブリック・ドメイン
               <FileSearchOutlined />{" "}
             </Text>
-          </>
+          </Button>
         </Popover>
       )}
       {right.uccj && (
-        <Popover content={<Uccj />} title="配信での利用について">
-          <Text strong type="success">
-            UCCJ
-            <FileSearchOutlined />{" "}
-          </Text>
+        <Popover
+          content={<Uccj />}
+          trigger="click"
+          title="配信での利用について"
+        >
+          <Button type="text">
+            <Text strong type="success">
+              UCCJ
+              <FileSearchOutlined />{" "}
+            </Text>
+          </Button>
         </Popover>
       )}
       {right.jasrac && (
-        <Popover content={<Jasrac />} title="配信での利用について">
-          <Text strong type="warning">
-            JASRAC
-            <FileSearchOutlined />{" "}
-          </Text>
+        <Popover
+          trigger="click"
+          content={<Jasrac />}
+          title="配信での利用について"
+        >
+          <Button type="text">
+            <Text strong type="warning">
+              JASRAC
+              <FileSearchOutlined />{" "}
+            </Text>
+          </Button>
         </Popover>
       )}
       {right.other && (
-        <Popover content={<Other />} title="配信での利用について">
-          <Text strong type="danger">
-            その他
-            <FileSearchOutlined />{" "}
-          </Text>
+        <Popover
+          trigger="click"
+          content={<Other />}
+          title="配信での利用について"
+        >
+          <Button type="text">
+            <Text strong type="danger">
+              その他
+              <FileSearchOutlined />{" "}
+            </Text>
+          </Button>
         </Popover>
       )}
     </>
