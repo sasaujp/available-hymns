@@ -1,4 +1,4 @@
-import { Typography, Input, Space, Checkbox, Button, Select } from "antd";
+import { Typography, Input, Space, Checkbox, Select } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
@@ -6,7 +6,6 @@ import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { SongTable, Status } from "components/table";
 import { DataType, fetchData } from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
-import { FilterOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { Search } = Input;

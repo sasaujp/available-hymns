@@ -6,7 +6,10 @@ const { Paragraph, Text, Link } = Typography;
 export const PublicDomain: React.FC = () => {
   return (
     <Paragraph>
-      パブリック・ドメインの作品は知的財産権が消滅、又は放棄されているので、制約なく利用することができます。
+      <Text type="success" strong>
+        パブリック・ドメインの作品
+      </Text>
+      は知的財産権が消滅、又は放棄されているので、制約なく利用することができます。
       <br /> 従って、礼拝配信等での利用は問題ありません。
       <br />
       パブリック・ドメインについての詳細は
@@ -25,7 +28,10 @@ export const PublicDomain: React.FC = () => {
 export const Uccj: React.FC = () => {
   return (
     <Paragraph>
-      日本基督教団が管理している楽曲については以下のように公布されています。
+      <Text type="success" strong>
+        日本基督教団が管理している楽曲
+      </Text>
+      については以下のように公布されています。
       <blockquote>
         日本キリスト教団出版局発行の賛美歌集より賛美歌を複写、インターネット配信される際、以下に該当する場合には申請不要といたします。
         <br />
@@ -54,7 +60,10 @@ export const Uccj: React.FC = () => {
 export const Jasrac: React.FC = () => {
   return (
     <Paragraph>
-      JASRACが管理している楽曲については以下のような手続きとなっています。
+      <Text type="warning" strong>
+        JASRACが管理している楽曲
+      </Text>
+      については以下の手続きとなっています。
       <br />→
       <Link
         href="https://www.jasrac.or.jp/info/network/pickup/movie.html"
@@ -100,7 +109,10 @@ export const Jasrac: React.FC = () => {
 export const Other: React.FC = () => {
   return (
     <Paragraph>
-      その他の場合は以下の状況が考えられます
+      <Text type="danger" strong>
+        その他
+      </Text>
+      の場合は以下の状況が考えられます
       <br />
       ・権利を個人で管理している。
       <br />
