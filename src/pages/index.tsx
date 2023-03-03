@@ -1,10 +1,12 @@
-import { Typography, Input, Space, Checkbox } from "antd";
+import { Typography, Input, Space, Checkbox, Button, Select } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { SongTable, Status } from "components/table";
 import { DataType, fetchData } from "@/utils/fetchData";
+import { useMediaQuery } from "react-responsive";
+import { FilterOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -28,6 +30,7 @@ export default function Home() {
   const [data, setData] = useState<{ [key: string]: DataType }>({});
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<CheckboxValueType[]>([]);
+  const isMobile = useMediaQuery({ query: "(max-width: 500px)" });
 
   const onChangeSearchText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +56,11 @@ export default function Home() {
   const onFilter = useCallback((value: CheckboxValueType[]) => {
     setFilter(value);
   }, []);
-  console.log(filter);
   return (
     <NoSSR>
       <div className={styles.container}>
         <Title className={styles.title}>みんなで作る讃美歌権利表(開発版)</Title>
-        <Space>
+        <Space wrap>
           <Search
             size="large"
             allowClear
@@ -66,13 +68,30 @@ export default function Home() {
             onChange={onChangeSearchText}
             placeholder="番号・歌い出しで絞り込む"
           />
-          <Text>絞り込み: </Text>
-          <Checkbox.Group
-            options={options}
-            onChange={onFilter}
-            value={filter}
-          />
+          {isMobile ? (
+            <Select
+              size="large"
+              mode="multiple"
+              allowClear
+              style={{
+                minWidth: "200px",
+              }}
+              onChange={onFilter}
+              placeholder="絞り込み"
+              options={options}
+            />
+          ) : (
+            <Space>
+              <Text>絞り込み: </Text>
+              <Checkbox.Group
+                options={options}
+                onChange={onFilter}
+                value={filter}
+              />
+            </Space>
+          )}
         </Space>
+
         <SongTable
           searchText={searchText}
           data={data}
