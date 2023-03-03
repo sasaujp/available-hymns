@@ -57,7 +57,7 @@ export default function Home() {
   return (
     <NoSSR>
       <div className={styles.container}>
-        <Title className={styles.title}>みんなで作る讃美歌権利表</Title>
+        <Title className={styles.title}>みんなで作る讃美歌権利表(開発版)</Title>
         <Space>
           <Search
             size="large"
