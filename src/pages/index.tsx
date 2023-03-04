@@ -1,4 +1,12 @@
-import { Typography, Input, Space, Checkbox, Select } from "antd";
+import {
+  Typography,
+  Input,
+  Space,
+  Checkbox,
+  Select,
+  Radio,
+  RadioChangeEvent,
+} from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
@@ -6,6 +14,7 @@ import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { SongTable, Status } from "components/table";
 import { DataType, fetchData } from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
+import { HymnBookType } from "@/utils/songs";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -29,6 +38,8 @@ export default function Home() {
   const [data, setData] = useState<{ [key: string]: DataType }>({});
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<CheckboxValueType[]>([]);
+  const [hymnBookType, setHymnBookType] = useState<HymnBookType>("1954");
+
   const isMobile = useMediaQuery({ query: "(max-width: 500px)" });
 
   const onChangeSearchText = useCallback(
@@ -38,10 +49,13 @@ export default function Home() {
     []
   );
 
+  const onChangeHymnType = useCallback((e: RadioChangeEvent) => {
+    setHymnBookType(e.target.value);
+  }, []);
+
   useEffect(() => {
     const fetch = async () => {
       const _data = await fetchData();
-      console.log(_data);
       setData(
         _data.reduce<{ [key: string]: DataType }>((prev, cur) => {
           prev[cur.key] = cur;
@@ -58,7 +72,16 @@ export default function Home() {
   return (
     <NoSSR>
       <div className={styles.container}>
-        <Title className={styles.title}>みんなで作る讃美歌権利表(開発版)</Title>
+        <Space className={styles.titleWrapper} wrap align="center">
+          <Title className={styles.title}>
+            みんなで作る讃美歌権利表(開発版)
+          </Title>
+          <Radio.Group value={hymnBookType} onChange={onChangeHymnType}>
+            <Radio.Button value="1954">讃美歌(1954年版)</Radio.Button>
+            <Radio.Button value="nihen">讃美歌第二編</Radio.Button>
+            <Radio.Button value="21">讃美歌21</Radio.Button>
+          </Radio.Group>
+        </Space>
         <Space wrap>
           <Search
             size="large"
@@ -93,6 +116,7 @@ export default function Home() {
         </Space>
 
         <SongTable
+          hymnBookType={hymnBookType}
           searchText={searchText}
           data={data}
           filter={filter as Status[]}

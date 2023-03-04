@@ -1,5 +1,5 @@
 import { DataType } from "@/utils/fetchData";
-import { SongData, SONGS } from "@/utils/songs";
+import { SongData, makeSongsData, HymnBookType } from "@/utils/songs";
 import { zenkaku2Hankaku } from "@/utils/zenkaku";
 import { FileSearchOutlined } from "@ant-design/icons";
 import { Button, List, Popover, Space, Table, Typography } from "antd";
@@ -230,12 +230,14 @@ const columns: ColumnsType<SongDataWithInfo> = [
 ];
 
 export const SongTable: React.FC<{
+  hymnBookType: HymnBookType;
   searchText: string;
   data: { [key: string]: DataType };
   filter: Status[];
-}> = ({ searchText, data, filter }) => {
+}> = ({ hymnBookType, searchText, data, filter }) => {
   const rawSongs = useMemo(() => {
-    return SONGS.map<SongDataWithInfo>((song) => {
+    const songs = makeSongsData(hymnBookType);
+    return songs.map<SongDataWithInfo>((song) => {
       return {
         ...song,
         ...{
@@ -251,13 +253,12 @@ export const SongTable: React.FC<{
         },
       };
     });
-  }, [data]);
+  }, [data, hymnBookType]);
 
   const songs: SongDataWithInfo[] = useMemo(() => {
     if (!searchText.length && !filter.length) {
       return rawSongs;
     }
-    console.log("filter", filter);
 
     const texts = searchText.split(" ");
     return rawSongs.filter(({ number, start, jasrac, data }) => {
