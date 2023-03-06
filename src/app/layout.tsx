@@ -10,7 +10,10 @@ export default function RootLayout({
     <>
       <Head>
         <title>みんなで作る讃美歌権利表</title>
-        <meta name="description" content="" />
+        <meta
+          name="description"
+          content="讃美歌の著作権に関しての情報を集約するためのWebアプリケーションです。"
+        />
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>

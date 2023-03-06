@@ -171,6 +171,31 @@ const columns: ColumnsType<SongDataWithInfo> = [
     },
   },
   {
+    title: "調べる",
+    key: "copy",
+    render: (_, { number, start }) => {
+      const hymnIdetifier = `＊讃美歌${zenkaku2Hankaku(number)}`;
+      return (
+        <Space>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(hymnIdetifier);
+            }}
+          >
+            「{hymnIdetifier}」をコピー
+          </Button>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(start);
+            }}
+          >
+            歌い出しをコピー
+          </Button>
+        </Space>
+      );
+    },
+  },
+  {
     title: "情報提供",
     key: "provisionOfInformation",
     dataIndex: "provisionOfInformation",
@@ -197,32 +222,6 @@ const columns: ColumnsType<SongDataWithInfo> = [
           <Button>UCCJ({data.uccj})</Button>
           <Button>JASRAC({data.jasrac})</Button>
           <Button>その他({data.other})</Button>
-        </Space>
-      );
-    },
-  },
-
-  {
-    title: "調べる",
-    key: "copy",
-    render: (_, { number, start }) => {
-      const hymnIdetifier = `＊讃美歌${zenkaku2Hankaku(number)}`;
-      return (
-        <Space>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(hymnIdetifier);
-            }}
-          >
-            「{hymnIdetifier}」をコピー
-          </Button>
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(start);
-            }}
-          >
-            歌い出しをコピー
-          </Button>
         </Space>
       );
     },
@@ -295,7 +294,10 @@ export const SongTable: React.FC<{
       summary={() => (
         <Table.Summary fixed="top">
           <Table.Summary.Row>
-            <Table.Summary.Cell index={0} colSpan={4}></Table.Summary.Cell>
+            <Table.Summary.Cell index={0} colSpan={2}></Table.Summary.Cell>
+            <Table.Summary.Cell index={0} colSpan={1}>
+              提供情報から表示しています。
+            </Table.Summary.Cell>
             <Table.Summary.Cell index={10}>
               <Button
                 href="https://www2.jasrac.or.jp/eJwid/"
@@ -305,6 +307,11 @@ export const SongTable: React.FC<{
               >
                 作品検索サービスを開く
               </Button>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={0} colSpan={1}>
+              他の利用者の型のために情報提供のご協力をお願いしております。
+              <br />
+              該当した権利状況を選択、またはコメントの投稿ができます。
             </Table.Summary.Cell>
           </Table.Summary.Row>
         </Table.Summary>

@@ -15,6 +15,8 @@ import { SongTable, Status } from "components/table";
 import { DataType, fetchData } from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
 import { HymnBookType } from "@/utils/songs";
+import { useRouter } from "next/router";
+import Image from "next/image";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -38,7 +40,6 @@ export default function Home() {
   const [data, setData] = useState<{ [key: string]: DataType }>({});
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<CheckboxValueType[]>([]);
-  const [hymnBookType, setHymnBookType] = useState<HymnBookType>("1954");
 
   const isMobile = useMediaQuery({ query: "(max-width: 500px)" });
 
@@ -48,10 +49,23 @@ export default function Home() {
     },
     []
   );
+  const router = useRouter();
 
-  const onChangeHymnType = useCallback((e: RadioChangeEvent) => {
-    setHymnBookType(e.target.value);
-  }, []);
+  const [hymnBookType, setHymnBookType] = useState<HymnBookType | null>(null);
+  useEffect(() => {
+    const type = (router.query.type as HymnBookType) ?? "1954";
+    setHymnBookType(type);
+    window.localStorage.setItem("hymnBookType", type);
+  }, [router.query]);
+
+  const onChangeHymnType = useCallback(
+    (e: RadioChangeEvent) => {
+      router.push({
+        query: { type: e.target.value },
+      });
+    },
+    [router]
+  );
 
   useEffect(() => {
     const fetch = async () => {
@@ -73,6 +87,7 @@ export default function Home() {
     <NoSSR>
       <div className={styles.container}>
         <Space className={styles.titleWrapper} wrap align="center">
+          <Image src="/logo.png" alt="" width={64} height={64} quality={100} />
           <Title className={styles.title}>
             みんなで作る讃美歌権利表(開発版)
           </Title>
@@ -114,13 +129,14 @@ export default function Home() {
             </Space>
           )}
         </Space>
-
-        <SongTable
-          hymnBookType={hymnBookType}
-          searchText={searchText}
-          data={data}
-          filter={filter as Status[]}
-        />
+        {hymnBookType && (
+          <SongTable
+            hymnBookType={hymnBookType}
+            searchText={searchText}
+            data={data}
+            filter={filter as Status[]}
+          />
+        )}
       </div>
     </NoSSR>
   );
