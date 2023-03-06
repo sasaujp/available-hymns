@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Typography,
   Input,
@@ -16,7 +17,6 @@ import { DataType, fetchData } from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
 import { HymnBookType } from "@/utils/songs";
 import { useRouter } from "next/router";
-import Image from "next/image";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -87,7 +87,7 @@ export default function Home() {
     <NoSSR>
       <div className={styles.container}>
         <Space className={styles.titleWrapper} wrap align="center">
-          <Image src="/logo.png" alt="" width={64} height={64} quality={100} />
+          <img src="/logo.png" alt="" width={64} height={64} />
           <Title className={styles.title}>
             みんなで作る讃美歌権利表(開発版)
           </Title>
