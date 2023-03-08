@@ -1,130 +1,14 @@
 import { DataType } from "@/utils/fetchData";
-import { SongData, makeSongsData, HymnBookType } from "@/utils/songs";
+import { makeSongsData, HymnBookType } from "@/utils/songs";
 import { zenkaku2Hankaku } from "@/utils/zenkaku";
-import { FileSearchOutlined } from "@ant-design/icons";
 import { Button, List, Popover, Space, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React, { useMemo } from "react";
-import { Jasrac, Other, PublicDomain, Uccj } from "./descriptions";
+import { SongDataWithInfo } from "./defines";
+import { Status } from "./defines";
+import { RightPopover, vote2Right } from "./Right";
 import styles from "./table.module.css";
 const { Text, Link } = Typography;
-
-export type Status = "publicDomain" | "uccj" | "jasrac" | "other" | "waiting";
-
-type SongDataWithInfo = SongData & { data: DataType };
-
-const vote2Right = (
-  jasrac: boolean,
-  vote: {
-    publicDomain: number;
-    uccj: number;
-    jasrac: number;
-    other: number;
-  }
-) => {
-  const right = {
-    publicDomain: false,
-    uccj: false,
-    jasrac: false,
-    other: false,
-    waiting: false,
-  };
-  if (jasrac) {
-    right.jasrac = true;
-  } else {
-    const { uccj, publicDomain, jasrac, other } = vote;
-    if (Math.max(uccj, publicDomain, jasrac, other) === 0) {
-      right.waiting = true;
-    } else {
-      if (Math.max(uccj, publicDomain, jasrac, other) === publicDomain) {
-        right.publicDomain = true;
-      }
-      if (Math.max(uccj, publicDomain, jasrac, other) === uccj) {
-        right.uccj = true;
-      }
-      if (Math.max(uccj, publicDomain, jasrac, other) === jasrac) {
-        right.jasrac = true;
-      }
-      if (Math.max(uccj, publicDomain, jasrac, other) === other) {
-        right.other = true;
-      }
-    }
-  }
-  return right;
-};
-
-const Right: React.FC<{
-  jasrac: boolean;
-  vote: {
-    publicDomain: number;
-    uccj: number;
-    jasrac: number;
-    other: number;
-  };
-}> = ({ jasrac, vote }) => {
-  const right = vote2Right(jasrac, vote);
-  return (
-    <>
-      {right.waiting && <Text>情報提供待ち </Text>}
-      {right.publicDomain && (
-        <Popover
-          content={<PublicDomain />}
-          trigger="click"
-          title="配信での利用について"
-        >
-          <Button type="text">
-            <Text strong type="success">
-              パブリック・ドメイン
-              <FileSearchOutlined />{" "}
-            </Text>
-          </Button>
-        </Popover>
-      )}
-      {right.uccj && (
-        <Popover
-          content={<Uccj />}
-          trigger="click"
-          title="配信での利用について"
-        >
-          <Button type="text">
-            <Text strong type="success">
-              UCCJ
-              <FileSearchOutlined />{" "}
-            </Text>
-          </Button>
-        </Popover>
-      )}
-      {right.jasrac && (
-        <Popover
-          trigger="click"
-          content={<Jasrac />}
-          title="配信での利用について"
-        >
-          <Button type="text">
-            <Text strong type="warning">
-              JASRAC
-              <FileSearchOutlined />{" "}
-            </Text>
-          </Button>
-        </Popover>
-      )}
-      {right.other && (
-        <Popover
-          trigger="click"
-          content={<Other />}
-          title="配信での利用について"
-        >
-          <Button type="text">
-            <Text strong type="danger">
-              その他
-              <FileSearchOutlined />{" "}
-            </Text>
-          </Button>
-        </Popover>
-      )}
-    </>
-  );
-};
 
 const CommentList: React.FC<{ comments: string[] }> = ({ comments }) => {
   return (
@@ -152,7 +36,7 @@ const columns: ColumnsType<SongDataWithInfo> = [
       return (
         <>
           <Text>
-            権利状況: <Right jasrac={jasrac} vote={data} />
+            権利状況: <RightPopover jasrac={jasrac} vote={data} />
             <br />
             {data.comments.length ? (
               <Popover

@@ -12,7 +12,9 @@ import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { CheckboxValueType } from "antd/es/checkbox/Group";
-import { SongTable, Status } from "components/table";
+import { Status } from "components/table/defines";
+import { SongTable } from "components/table/table";
+import { SongTableSp } from "components/table/sp";
 import { DataType, fetchData } from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
 import { HymnBookType } from "@/utils/songs";
@@ -87,8 +89,8 @@ export default function Home() {
     <NoSSR>
       <div className={styles.container}>
         <Space className={styles.titleWrapper} wrap align="center">
-          <img src="/logo.png" alt="" width={64} height={64} />
-          <Title className={styles.title}>
+          {!isMobile && <img src="/logo.png" alt="" width={64} height={64} />}
+          <Title level={isMobile ? 4 : 1} className={styles.title}>
             みんなで作る讃美歌権利表(開発版)
           </Title>
           <Radio.Group value={hymnBookType} onChange={onChangeHymnType}>
@@ -129,14 +131,22 @@ export default function Home() {
             </Space>
           )}
         </Space>
-        {hymnBookType && (
-          <SongTable
-            hymnBookType={hymnBookType}
-            searchText={searchText}
-            data={data}
-            filter={filter as Status[]}
-          />
-        )}
+        {hymnBookType &&
+          (isMobile ? (
+            <SongTableSp
+              hymnBookType={hymnBookType}
+              searchText={searchText}
+              data={data}
+              filter={filter as Status[]}
+            />
+          ) : (
+            <SongTable
+              hymnBookType={hymnBookType}
+              searchText={searchText}
+              data={data}
+              filter={filter as Status[]}
+            />
+          ))}
       </div>
     </NoSSR>
   );

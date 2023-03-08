@@ -7,7 +7,7 @@ export const PublicDomain: React.FC = () => {
   return (
     <Paragraph>
       <Text type="success" strong>
-        パブリック・ドメインの作品
+        パブリック・ドメイン
       </Text>
       の作品は知的財産権が消滅、又は放棄されているので、制約なく利用することができます。
       <br /> 従って、礼拝配信等での利用は問題ありません。
@@ -73,7 +73,8 @@ export const Jasrac: React.FC = () => {
         動画投稿（共有）サービスでの音楽利用
       </Link>
       <br />
-      従って、YoutubeやFacebookを含む
+      <br />
+      従って、YoutubeやFacebookを含む、
       <Link
         href="https://www.jasrac.or.jp/news/20/ugc.html"
         target="_blank"
