@@ -34,7 +34,27 @@ const options = [
 const NoSSR = dynamic(() => import("../app/layout"), {
   ssr: false,
   loading: (props) => {
-    return <>loading...</>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img src="/logo.png" alt="" width={128} height={128} />
+          <br />
+          Loading...
+        </div>
+      </div>
+    );
   },
 });
 
