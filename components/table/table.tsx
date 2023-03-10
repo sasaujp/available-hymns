@@ -86,7 +86,7 @@ export const SongTable: React.FC<{
   );
   const columns = useMemo(() => {
     const columns: ColumnsType<SongDataWithInfo> = [
-      { title: "番号", dataIndex: "number", key: "number", width: "3%" },
+      { title: "番号", dataIndex: "number", key: "number", width: "5%" },
       {
         title: "歌い出し",
         dataIndex: "start",
@@ -129,7 +129,7 @@ export const SongTable: React.FC<{
         render: (_, { number, start }) => {
           const hymnIdetifier = `＊讃美歌${zenkaku2Hankaku(number)}`;
           return (
-            <Space>
+            <Space wrap>
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(hymnIdetifier);
@@ -152,7 +152,7 @@ export const SongTable: React.FC<{
         title: "情報提供",
         key: "provisionOfInformation",
         dataIndex: "provisionOfInformation",
-        width: "37%",
+        width: "35%",
 
         render: (_, { jasrac, data }) => {
           if (jasrac) {
