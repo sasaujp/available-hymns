@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SongDataWithInfo, Status } from "./defines";
 import { RightExpansion, RightText, vote2Right } from "./Right";
 import styles from "./table.module.css";
-const { Text, Title } = Typography;
+const { Text, Title, Link } = Typography;
 
 const columns: ColumnsType<SongDataWithInfo> = [
   { title: "番号", dataIndex: "number", key: "number", width: "25%" },
@@ -42,8 +42,10 @@ export const ModalContent: React.FC<{
     return null;
   }
 
-  const { start, number, data: vote } = data;
+  const { start, number, jasrac, data: vote } = data;
   const hymnIdetifier = `＊讃美歌${zenkaku2Hankaku(number)}`;
+
+  const right = vote2Right(jasrac, vote);
 
   return (
     <>
@@ -74,20 +76,47 @@ export const ModalContent: React.FC<{
         </Button>
       </Space>
       <Title level={5}>情報提供</Title>
-      <Space wrap>
-        <Button onClick={() => handleReport(number, "publicDomain")}>
-          パブリック・ドメイン({vote.publicDomain})
-        </Button>
-        <Button onClick={() => handleReport(number, "uccj")}>
-          UCCJ({vote.uccj})
-        </Button>
-        <Button onClick={() => handleReport(number, "jasrac")}>
-          JASRAC({vote.jasrac})
-        </Button>
-        <Button onClick={() => handleReport(number, "other")}>
-          その他({vote.other})
-        </Button>
-      </Space>
+      {!jasrac ? (
+        <Space wrap>
+          <Button
+            type={right.publicDomain ? "primary" : undefined}
+            onClick={() => handleReport(number, "publicDomain")}
+          >
+            パブリック・ドメイン({vote.publicDomain})
+          </Button>
+          <Button
+            type={right.uccj ? "primary" : undefined}
+            onClick={() => handleReport(number, "uccj")}
+          >
+            UCCJ({vote.uccj})
+          </Button>
+          <Button
+            type={right.jasrac ? "primary" : undefined}
+            onClick={() => handleReport(number, "jasrac")}
+          >
+            JASRAC({vote.jasrac})
+          </Button>
+          <Button
+            type={right.other ? "primary" : undefined}
+            onClick={() => handleReport(number, "other")}
+          >
+            その他({vote.other})
+          </Button>
+        </Space>
+      ) : (
+        <Text>
+          JASRAC管理讃美歌です。
+          <br />
+          <Link
+            href="https://bp-uccj.jp/files/h-c.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            『讃美歌』（1954年版）日本キリスト教団出版局外
+            著作権管理リスト（PDF）
+          </Link>
+        </Text>
+      )}
     </>
   );
 };
