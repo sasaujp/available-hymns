@@ -7,6 +7,8 @@ import {
   Select,
   Radio,
   RadioChangeEvent,
+  Popover,
+  Button,
 } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
@@ -15,10 +17,16 @@ import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { Status } from "components/table/defines";
 import { SongTable } from "components/table/table";
 import { SongTableSp } from "components/table/sp";
-import { DataType, fetchData } from "@/utils/fetchData";
+import {
+  DataType,
+  fetchData,
+  fetchRecord,
+  RecordType,
+} from "@/utils/fetchData";
 import { useMediaQuery } from "react-responsive";
 import { HymnBookType } from "@/utils/songs";
 import { useRouter } from "next/router";
+import { dateString, RecordList } from "components/record";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -33,7 +41,7 @@ const options = [
 
 const NoSSR = dynamic(() => import("../app/layout"), {
   ssr: false,
-  loading: (props) => {
+  loading: () => {
     return (
       <div
         style={{
@@ -89,22 +97,32 @@ export default function Home() {
     [router]
   );
 
+  const [records, setRecords] = useState<RecordType[]>([]);
+
+  const dataFetch = useCallback(async () => {
+    if (!hymnBookType) {
+      return;
+    }
+    const _data = await fetchData(hymnBookType);
+    setData(
+      _data.reduce<{ [key: string]: DataType }>((prev, cur) => {
+        prev[cur.key] = cur;
+        return prev;
+      }, {})
+    );
+
+    const records = await fetchRecord();
+    setRecords(records);
+  }, [hymnBookType]);
+
   useEffect(() => {
-    const fetch = async () => {
-      const _data = await fetchData();
-      setData(
-        _data.reduce<{ [key: string]: DataType }>((prev, cur) => {
-          prev[cur.key] = cur;
-          return prev;
-        }, {})
-      );
-    };
-    fetch();
-  }, []);
+    dataFetch();
+  }, [dataFetch, hymnBookType]);
 
   const onFilter = useCallback((value: CheckboxValueType[]) => {
     setFilter(value);
   }, []);
+
   return (
     <NoSSR>
       <div className={styles.container}>
@@ -118,6 +136,17 @@ export default function Home() {
             <Radio.Button value="nihen">讃美歌第二編</Radio.Button>
             <Radio.Button value="21">讃美歌21</Radio.Button>
           </Radio.Group>
+          {records.length ? (
+            <Popover
+              trigger="click"
+              content={<RecordList records={records} />}
+              title="最近提供された情報"
+            >
+              <Button>
+                {dateString(records[0].votedAt)}に情報提供がありました。
+              </Button>
+            </Popover>
+          ) : null}
         </Space>
         <Space wrap>
           <Search
@@ -158,6 +187,7 @@ export default function Home() {
               searchText={searchText}
               data={data}
               filter={filter as Status[]}
+              dataFetch={dataFetch}
             />
           ) : (
             <SongTable
@@ -165,6 +195,7 @@ export default function Home() {
               searchText={searchText}
               data={data}
               filter={filter as Status[]}
+              dataFetch={dataFetch}
             />
           ))}
       </div>

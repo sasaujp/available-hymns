@@ -1,5 +1,5 @@
 import { FileSearchOutlined } from "@ant-design/icons";
-import { Button, Popover, Typography } from "antd";
+import { Button, Popover, Space, Typography } from "antd";
 import { Jasrac, Other, PublicDomain, Uccj } from "components/descriptions";
 import React, { useCallback, useEffect, useState } from "react";
 import { Status } from "./defines";
@@ -56,7 +56,7 @@ export const RightPopover: React.FC<{
 }> = ({ jasrac, vote }) => {
   const right = vote2Right(jasrac, vote);
   return (
-    <>
+    <Space wrap>
       {right.waiting && <Text>情報提供待ち </Text>}
       {right.publicDomain && (
         <Popover
@@ -114,7 +114,7 @@ export const RightPopover: React.FC<{
           </Button>
         </Popover>
       )}
-    </>
+    </Space>
   );
 };
 

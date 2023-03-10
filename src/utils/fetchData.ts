@@ -1,40 +1,81 @@
+import axios from "axios";
+import { HymnBookType } from "./songs";
+
+const API_ORIGIN =
+  process.env.NEXT_PUBLIC_SPARQL_ENDPOINT ?? "http://localhost:8787";
+
 export type DataType = {
   key: string;
   publicDomain: number;
   uccj: number;
   jasrac: number;
   other: number;
-  searchWords: string[];
   comments: string[];
 };
 
-const generateRandomDataType = (key: string): DataType => {
-  const randomString = () => Math.random().toString(36).substring(2, 15);
-  const randomInt = () => Math.floor(Math.random() * 100);
+export type RightType = "publicDomain" | "uccj" | "jasrac" | "other";
 
-  const dataType: DataType = {
-    key,
-    publicDomain: randomInt(),
-    uccj: randomInt(),
-    jasrac: randomInt(),
-    other: randomInt(),
-    searchWords: [randomString(), randomString(), randomString()],
-    comments: [randomString(), randomString(), randomString()],
-  };
+export const fetchData = async (hymnBookType: string): Promise<DataType[]> => {
+  const result = await axios.get<{
+    hymns: {
+      hymnBookType: HymnBookType;
+      hymnNumber: string;
+      rightType: RightType;
+      numberOfVote: number;
+    }[];
+  }>(`${API_ORIGIN}/api/votes/${hymnBookType}`);
 
-  return dataType;
+  const data = result.data.hymns.reduce<{ [key: string]: DataType }>(
+    (prev, { hymnNumber, rightType, numberOfVote }) => {
+      if (!prev[hymnNumber]) {
+        prev[hymnNumber] = {
+          key: hymnNumber,
+          publicDomain: 0,
+          uccj: 0,
+          jasrac: 0,
+          other: 0,
+          comments: [],
+        };
+      }
+      prev[hymnNumber][rightType] = numberOfVote;
+      return prev;
+    },
+    {}
+  );
+  return Object.values(data);
 };
 
-export const fetchData = async () => {
-  return [
-    generateRandomDataType("1"),
-    generateRandomDataType("2"),
-    generateRandomDataType("3"),
-    generateRandomDataType("4"),
-    generateRandomDataType("5"),
-    generateRandomDataType("6"),
-    generateRandomDataType("7"),
-    generateRandomDataType("8"),
-    generateRandomDataType("9"),
-  ];
+export type RecordType = {
+  hymnBookType: HymnBookType;
+  hymnNumber: string;
+  rightType: RightType;
+  votedAt: number;
+};
+
+export const fetchRecord = async (): Promise<RecordType[]> => {
+  const result = await axios.get<{
+    records: RecordType[];
+  }>(`${API_ORIGIN}/api/records`);
+
+  return result.data.records;
+};
+
+export const postRecord = async (
+  hymnBookType: HymnBookType,
+  hymnNumber: string,
+  rightType: RightType
+) => {
+  await axios.post<{ ok: true }>(
+    `${API_ORIGIN}/api/records`,
+    JSON.stringify({
+      hymnBookType,
+      hymnNumber,
+      rightType,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };

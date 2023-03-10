@@ -1,9 +1,9 @@
-import { DataType } from "@/utils/fetchData";
+import { DataType, postRecord, RightType } from "@/utils/fetchData";
 import { makeSongsData, HymnBookType } from "@/utils/songs";
 import { zenkaku2Hankaku } from "@/utils/zenkaku";
-import { Table, Typography, Modal, Space, Button } from "antd";
+import { Table, Typography, Modal, Space, Button, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SongDataWithInfo, Status } from "./defines";
 import { RightExpansion, RightText, vote2Right } from "./Right";
 import styles from "./table.module.css";
@@ -29,9 +29,10 @@ const columns: ColumnsType<SongDataWithInfo> = [
   },
 ];
 
-export const ModalContent: React.FC<{ data: SongDataWithInfo | null }> = ({
-  data,
-}) => {
+export const ModalContent: React.FC<{
+  data: SongDataWithInfo | null;
+  handleReport: (hymnNumber: string, rightType: RightType) => Promise<void>;
+}> = ({ data, handleReport }) => {
   const [update, setUpdate] = useState(0);
   useEffect(() => {
     setUpdate((v) => v + 1);
@@ -74,10 +75,18 @@ export const ModalContent: React.FC<{ data: SongDataWithInfo | null }> = ({
       </Space>
       <Title level={5}>情報提供</Title>
       <Space wrap>
-        <Button>パブリック・ドメイン({vote.publicDomain})</Button>
-        <Button>UCCJ({vote.uccj})</Button>
-        <Button>JASRAC({vote.jasrac})</Button>
-        <Button>その他({vote.other})</Button>
+        <Button onClick={() => handleReport(number, "publicDomain")}>
+          パブリック・ドメイン({vote.publicDomain})
+        </Button>
+        <Button onClick={() => handleReport(number, "uccj")}>
+          UCCJ({vote.uccj})
+        </Button>
+        <Button onClick={() => handleReport(number, "jasrac")}>
+          JASRAC({vote.jasrac})
+        </Button>
+        <Button onClick={() => handleReport(number, "other")}>
+          その他({vote.other})
+        </Button>
       </Space>
     </>
   );
@@ -88,7 +97,8 @@ export const SongTableSp: React.FC<{
   searchText: string;
   data: { [key: string]: DataType };
   filter: Status[];
-}> = ({ hymnBookType, searchText, data, filter }) => {
+  dataFetch: () => void;
+}> = ({ hymnBookType, searchText, data, filter, dataFetch }) => {
   const [focusData, setFocusData] = useState<null | SongDataWithInfo>(null);
   const rawSongs = useMemo(() => {
     const songs = makeSongsData(hymnBookType);
@@ -137,8 +147,20 @@ export const SongTableSp: React.FC<{
     });
   }, [rawSongs, searchText, filter]);
 
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const handleReport = useCallback(
+    async (hymnNumber: string, rightType: RightType) => {
+      await postRecord(hymnBookType, hymnNumber, rightType);
+      messageApi.success("情報提供ありがとうございました！");
+      dataFetch();
+    },
+    [hymnBookType, messageApi, dataFetch]
+  );
+
   return (
     <>
+      {contextHolder}
       <Table
         onRow={(data) => {
           return {
@@ -164,7 +186,7 @@ export const SongTableSp: React.FC<{
         footer={null}
         maskClosable={true}
       >
-        <ModalContent data={focusData} />
+        <ModalContent data={focusData} handleReport={handleReport} />
       </Modal>
     </>
   );
