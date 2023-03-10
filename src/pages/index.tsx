@@ -27,6 +27,7 @@ import { useMediaQuery } from "react-responsive";
 import { HymnBookType } from "@/utils/songs";
 import { useRouter } from "next/router";
 import { dateString, RecordList } from "components/record";
+import { isDevelop } from "@/utils/defines";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -129,7 +130,7 @@ export default function Home() {
         <Space className={styles.titleWrapper} wrap align="center">
           {!isMobile && <img src="/logo.png" alt="" width={64} height={64} />}
           <Title level={isMobile ? 4 : 1} className={styles.title}>
-            みんなで作る讃美歌権利表(開発版)
+            みんなで作る讃美歌権利表{isDevelop ? "(開発版)" : null}
           </Title>
           <Radio.Group value={hymnBookType} onChange={onChangeHymnType}>
             <Radio.Button value="1954">讃美歌(1954年版)</Radio.Button>

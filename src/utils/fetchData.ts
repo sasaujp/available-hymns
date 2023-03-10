@@ -2,7 +2,7 @@ import axios from "axios";
 import { HymnBookType } from "./songs";
 
 const API_ORIGIN =
-  process.env.NEXT_PUBLIC_SPARQL_ENDPOINT ?? "http://localhost:8787";
+  process.env.NEXT_PUBLIC_API_ORIGIN ?? "http://localhost:8787";
 
 export type DataType = {
   key: string;
