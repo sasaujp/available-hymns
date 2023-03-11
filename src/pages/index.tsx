@@ -10,10 +10,11 @@ import {
   Popover,
   Button,
   FloatButton,
+  Tour,
 } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CheckboxValueType } from "antd/es/checkbox/Group";
 import { Status } from "components/table/defines";
 import { SongTable } from "components/table/table";
@@ -76,6 +77,12 @@ export default function Home() {
 
   const isMobile = useMediaQuery({ query: "(max-width: 500px)" });
 
+  const [showGuide, setShowGuide] = useState(false);
+
+  const onClickHelp = useCallback(() => {
+    setShowGuide(true);
+  }, []);
+
   const onChangeSearchText = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
@@ -134,6 +141,20 @@ export default function Home() {
           <Title level={isMobile ? 4 : 1} className={styles.title}>
             みんなで作る讃美歌権利表{isDevelop ? "(開発版)" : null}
           </Title>
+          {!isMobile ? (
+            <Button
+              size="large"
+              icon={
+                <QuestionCircleOutlined
+                  style={{
+                    fontSize: "20px",
+                  }}
+                />
+              }
+              shape="circle"
+              type="primary"
+            />
+          ) : null}
           <Radio.Group value={hymnBookType} onChange={onChangeHymnType}>
             <Radio.Button value="1954">讃美歌(1954年版)</Radio.Button>
             <Radio.Button value="nihen">讃美歌第二編</Radio.Button>
@@ -204,15 +225,17 @@ export default function Home() {
       </div>
       {isMobile ? (
         <FloatButton
-          style={{
-            width: "52px",
-            height: "52px",
-          }}
+          onClick={onClickHelp}
           className={styles.helpButton}
-          icon={<QuestionCircleOutlined />}
+          icon={
+            <QuestionCircleOutlined
+              style={{
+                fontSize: "30px",
+              }}
+            />
+          }
           type="primary"
-          description="使い方"
-          shape="square"
+          shape="circle"
         />
       ) : null}
     </NoSSR>

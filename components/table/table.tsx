@@ -1,6 +1,7 @@
 import { DataType, postRecord, RightType } from "@/utils/fetchData";
 import { makeSongsData, HymnBookType } from "@/utils/songs";
 import { zenkaku2Hankaku } from "@/utils/zenkaku";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, List, Popover, Space, Table, Typography, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React, { useCallback, useMemo } from "react";
@@ -122,7 +123,7 @@ export const SongTable: React.FC<{
         },
       },
       {
-        title: "調べる",
+        title: "権利状況を調べる",
         key: "copy",
         width: "30%",
 
@@ -218,10 +219,7 @@ export const SongTable: React.FC<{
         summary={() => (
           <Table.Summary fixed="top">
             <Table.Summary.Row>
-              <Table.Summary.Cell index={0} colSpan={2}></Table.Summary.Cell>
-              <Table.Summary.Cell index={0} colSpan={1}>
-                提供情報から表示しています。
-              </Table.Summary.Cell>
+              <Table.Summary.Cell index={0} colSpan={3}></Table.Summary.Cell>
               <Table.Summary.Cell index={10}>
                 <Button
                   href="https://www2.jasrac.or.jp/eJwid/"
