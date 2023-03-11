@@ -14,3 +14,7 @@
 .card {
   min-width: 320px;
 }
+
+.helpButton {
+  bottom: 76px;
+}

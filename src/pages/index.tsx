@@ -9,6 +9,7 @@ import {
   RadioChangeEvent,
   Popover,
   Button,
+  FloatButton,
 } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
@@ -28,6 +29,7 @@ import { HymnBookType } from "@/utils/songs";
 import { useRouter } from "next/router";
 import { dateString, RecordList } from "components/record";
 import { isDevelop } from "@/utils/defines";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -200,6 +202,19 @@ export default function Home() {
             />
           ))}
       </div>
+      {isMobile ? (
+        <FloatButton
+          style={{
+            width: "52px",
+            height: "52px",
+          }}
+          className={styles.helpButton}
+          icon={<QuestionCircleOutlined />}
+          type="primary"
+          description="使い方"
+          shape="square"
+        />
+      ) : null}
     </NoSSR>
   );
 }
