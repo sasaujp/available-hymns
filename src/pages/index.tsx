@@ -11,6 +11,7 @@ import {
   Button,
   FloatButton,
   Tour,
+  Modal,
 } from "antd";
 import styles from "./styles.module.css";
 import dynamic from "next/dynamic";
@@ -31,6 +32,7 @@ import { useRouter } from "next/router";
 import { dateString, RecordList } from "components/record";
 import { isDevelop } from "@/utils/defines";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { HelpModalContent } from "components/descriptions";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -79,8 +81,8 @@ export default function Home() {
 
   const [showGuide, setShowGuide] = useState(false);
 
-  const onClickHelp = useCallback(() => {
-    setShowGuide(true);
+  const toggleHelp = useCallback(() => {
+    setShowGuide((val) => !val);
   }, []);
 
   const onChangeSearchText = useCallback(
@@ -143,7 +145,9 @@ export default function Home() {
           </Title>
           {!isMobile ? (
             <Button
+              className={styles.helpButton}
               size="large"
+              onClick={toggleHelp}
               icon={
                 <QuestionCircleOutlined
                   style={{
@@ -225,8 +229,8 @@ export default function Home() {
       </div>
       {isMobile ? (
         <FloatButton
-          onClick={onClickHelp}
-          className={styles.helpButton}
+          onClick={toggleHelp}
+          className={styles.helpFloatButton}
           icon={
             <QuestionCircleOutlined
               style={{
@@ -238,6 +242,9 @@ export default function Home() {
           shape="circle"
         />
       ) : null}
+      <Modal title="このサイトについて" open={showGuide} onCancel={toggleHelp}>
+        <HelpModalContent />
+      </Modal>
     </NoSSR>
   );
 }

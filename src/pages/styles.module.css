@@ -15,11 +15,17 @@
   min-width: 320px;
 }
 
-.helpButton {
+.helpFloatButton {
   width: 52px;
   height: 52px;
   bottom: 76px;
   display: flex;
   justify-content: "center";
   align-items: "center";
+}
+
+.helpButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

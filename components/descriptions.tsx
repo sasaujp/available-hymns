@@ -136,3 +136,7 @@ export const Other: React.FC = () => {
     </Paragraph>
   );
 };
+
+export const HelpModalContent: React.FC = () => {
+  return <Paragraph>ほげほげ</Paragraph>;
+};
