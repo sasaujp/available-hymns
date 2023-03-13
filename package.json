@@ -33,7 +33,6 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^0.3.0",
     "@cloudflare/workers-types": "^4.20230307.0",
-    "@types/antd": "^1.0.0",
     "@types/uuid": "^9.0.1",
     "better-sqlite3": "^8.2.0",
     "kysely-codegen": "^0.9.0",
