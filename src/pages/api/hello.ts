@@ -5,13 +5,13 @@ export const config = {
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      HYMNS: D1Database;
+      DB: D1Database;
     }
   }
 }
 
 const hello = async (a: any, b: any, c: any) => {
-  const { results } = await process.env.HYMNS.prepare(
+  const { results } = await process.env.DB.prepare(
     "SELECT * FROM HymnData"
   ).all();
   console.log(results);

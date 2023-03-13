@@ -1,7 +1,7 @@
 name = "hymn-rights-hub"
-compatibility_date = "2023-03-11"
+compatibility_date = "2023-03-09"
 
 [[ d1_databases ]]
-binding = "HYMNS" # i.e. available in your Worker on env.DB
+binding = "DB" # i.e. available in your Worker on env.DB
 database_name = "hymns-dev"
 database_id = "5c46e25e-e9ef-4d5d-ad27-cb453a2e0e41"

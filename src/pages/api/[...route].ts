@@ -9,7 +9,6 @@ import { handle } from "hono/nextjs";
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      HYMNS: D1Database;
       DB: D1Database;
     }
   }
@@ -28,28 +27,42 @@ const api = new Hono();
 api.use("/*", cors());
 
 api.get("/votes/:bookType", async (c) => {
-  console.log(c);
-  const client = new Kysely<DB>({
-    dialect: new D1Dialect({ database: process.env.DB }),
-  });
-  const bookType = c.req.param("bookType");
-  const hymns = await client
-    .selectFrom("HymnData")
-    .where("HymnData.hymnBookType", "==", bookType)
-    .selectAll()
-    .execute();
-  return c.json(
-    {
-      hymns,
-    },
-    200
-  );
+  try {
+    const client = new Kysely<DB>({
+      dialect: new D1Dialect({ database: process.env.DB }),
+    });
+    const bookType = c.req.param("bookType");
+    const hymns = await client
+      .selectFrom("HymnData")
+      .where("HymnData.hymnBookType", "==", bookType)
+      .selectAll()
+      .execute();
+    return c.json(
+      {
+        hymns,
+      },
+      200
+    );
+  } catch (e) {
+    console.log(process.env.DB);
+    const { results } = await process.env.DB.prepare(
+      "select name from sqlite_master where type='table'"
+    ).all();
+    console.log(results);
+
+    return c.json(
+      {
+        table: {},
+      },
+      200
+    );
+  }
 });
 
 api
   .get("/records", async (c) => {
     const client = new Kysely<DB>({
-      dialect: new D1Dialect({ database: process.env.HYMNS }),
+      dialect: new D1Dialect({ database: process.env.DB }),
     });
     const records = await client
       .selectFrom("HymnVoteRecord")
@@ -77,7 +90,7 @@ api
       rightType: string;
     }>();
     const client = new Kysely<DB>({
-      dialect: new D1Dialect({ database: process.env.HYMNS }),
+      dialect: new D1Dialect({ database: process.env.DB }),
     });
     await client
       .insertInto("HymnVoteRecord")
